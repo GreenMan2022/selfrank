@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Статьи ({{ 'Русский' if lang == 'ru' else 'English' }})</h2>
+{% if articles %}
+<ul>
+{% for a in articles %}
+    <li><a href="{{ url_for('article', lang=lang, slug=a[2] if config.USE_POSTGRES else a.slug) }}">{{ a[1] if config.USE_POSTGRES else a.title }}</a></li>
+{% endfor %}
+</ul>
+{% else %}
+<p>Нет статей. <a href="{{ url_for('admin') }}">Создайте первую!</a></p>
+{% endif %}
+{% endblock %}
