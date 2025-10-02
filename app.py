@@ -15,7 +15,9 @@ app = Flask(__name__)
 # Определяем среду
 IS_RENDER = os.environ.get("RENDER", False)
 if IS_RENDER:
-    DATABASE_URL = os.environ["DATABASE_URL"]
+    DATABASE_URL = os.environ.get("DATABASE_URL")
+    if not DATABASE_URL:
+        raise RuntimeError("❌ Переменная окружения DATABASE_URL не задана! Добавьте её в Render.")
     USE_POSTGRES = True
 else:
     os.makedirs(app.instance_path, exist_ok=True)
