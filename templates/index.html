@@ -1,13 +1,63 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Статьи ({{ 'Русский' if lang == 'ru' else 'English' }})</h2>
-{% if articles %}
-<ul>
-{% for a in articles %}
-    <li><a href="{{ url_for('article', lang=lang, slug=a[2] if config.USE_POSTGRES else a.slug) }}">{{ a[1] if config.USE_POSTGRES else a.title }}</a></li>
-{% endfor %}
-</ul>
-{% else %}
-<p>Нет статей. <a href="{{ url_for('admin') }}">Создайте первую!</a></p>
-{% endif %}
+<h2>Создать статью с AI</h2>
+<form id="articleForm">
+    <input name="title" placeholder="Тема статьи" required style="width:100%; padding:10px; margin:5px 0; border:1px solid #ccc; border-radius:4px;"><br>
+    <input name="keywords" placeholder="Ключевые слова (опционально)" style="width:100%; padding:10px; margin:5px 0; border:1px solid #ccc; border-radius:4px;"><br>
+    <select name="lang" style="width:100%; padding:10px; margin:5px 0; border:1px solid #ccc; border-radius:4px;">
+        <option value="ru">🇷🇺 Русский</option>
+        <option value="en">🇬🇧 English</option>
+    </select><br>
+    <button type="submit" style="width:100%; padding:12px; background:#0066cc; color:white; border:none; border-radius:4px; cursor:pointer; font-size:16px;">
+        Сгенерировать статью с AI
+    </button>
+</form>
+<div id="result" style="margin-top:20px; min-height:30px;"></div>
+
+<script>
+document.getElementById('articleForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const submitBtn = form.querySelector('button');
+    const originalText = submitBtn.textContent;
+    
+    // Показываем "Генерация..."
+    submitBtn.textContent = 'Генерация... (может занять 10-30 сек)';
+    submitBtn.disabled = true;
+    
+    try {
+        const res = await fetch('/admin', {
+            method: 'POST',
+            body: new FormData(form)
+        });
+        const data = await res.json();
+        const resultDiv = document.getElementById('result');
+        
+        if (data.status === 'success') {
+            resultDiv.innerHTML = `
+                <div style="padding:12px; background:#d4edda; color:#155724; border:1px solid #c3e6cb; border-radius:4px;">
+                    ✅ Статья успешно создана!<br>
+                    <a href="${data.url}" style="color:#0066cc; text-decoration:underline;">Открыть статью</a>
+                </div>
+            `;
+            form.reset(); // Очистить форму
+        } else {
+            resultDiv.innerHTML = `
+                <div style="padding:12px; background:#f8d7da; color:#721c24; border:1px solid #f5c6cb; border-radius:4px;">
+                    ❌ Ошибка: ${data.message || 'Не удалось создать статью'}
+                </div>
+            `;
+        }
+    } catch (err) {
+        document.getElementById('result').innerHTML = `
+            <div style="padding:12px; background:#f8d7da; color:#721c24; border:1px solid #f5c6cb; border-radius:4px;">
+                ❌ Ошибка подключения к серверу
+            </div>
+        `;
+    } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+    }
+});
+</script>
 {% endblock %}
