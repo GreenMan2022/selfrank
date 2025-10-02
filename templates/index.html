@@ -21,8 +21,7 @@ document.getElementById('articleForm').addEventListener('submit', async (e) => {
     const submitBtn = form.querySelector('button');
     const originalText = submitBtn.textContent;
     
-    // Показываем "Генерация..."
-    submitBtn.textContent = 'Генерация... (может занять 10-30 сек)';
+    submitBtn.textContent = 'Генерация... (10–30 сек)';
     submitBtn.disabled = true;
     
     try {
@@ -36,22 +35,21 @@ document.getElementById('articleForm').addEventListener('submit', async (e) => {
         if (data.status === 'success') {
             resultDiv.innerHTML = `
                 <div style="padding:12px; background:#d4edda; color:#155724; border:1px solid #c3e6cb; border-radius:4px;">
-                    ✅ Статья успешно создана!<br>
-                    <a href="${data.url}" style="color:#0066cc; text-decoration:underline;">Открыть статью</a>
+                    ✅ Статья создана! <a href="${data.url}" style="color:#0066cc;">Открыть</a>
                 </div>
             `;
-            form.reset(); // Очистить форму
+            form.reset();
         } else {
             resultDiv.innerHTML = `
                 <div style="padding:12px; background:#f8d7da; color:#721c24; border:1px solid #f5c6cb; border-radius:4px;">
-                    ❌ Ошибка: ${data.message || 'Не удалось создать статью'}
+                    ❌ ${data.message || 'Ошибка создания'}
                 </div>
             `;
         }
     } catch (err) {
         document.getElementById('result').innerHTML = `
             <div style="padding:12px; background:#f8d7da; color:#721c24; border:1px solid #f5c6cb; border-radius:4px;">
-                ❌ Ошибка подключения к серверу
+                ❌ Ошибка подключения
             </div>
         `;
     } finally {
