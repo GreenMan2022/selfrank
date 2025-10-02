@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{{ article[1] if config.USE_POSTGRES else article.title }}{% endblock %}
+{% block meta_desc %}{{ meta_description }}{% endblock %}
+{% block content %}
+<article>
+    <h1>{{ article[1] if config.USE_POSTGRES else article.title }}</h1>
+    {{ (article[3] if config.USE_POSTGRES else article.content)|safe }}
+</article>
+{% endblock %}
