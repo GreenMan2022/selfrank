@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="{{ lang or 'ru' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SelfRank{% endblock %}</title>
+    <meta name="description" content="{% block meta_desc %}Автоматически оптимизированный SEO-блог{% endblock %}">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; }
+        header { border-bottom: 1px solid #eee; padding-bottom: 1rem; margin-bottom: 2rem; }
+        nav a { margin-right: 12px; text-decoration: none; color: #0066cc; }
+        nav a:hover { text-decoration: underline; }
+        footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #eee; color: #777; font-size: 0.9em; }
+        form input, form select, form button { padding: 8px; margin: 4px 0; width: 100%; box-sizing: border-box; }
+        form button { background: #0066cc; color: white; border: none; cursor: pointer; }
+        form button:hover { background: #0052a3; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="{{ url_for('index', lang=lang) }}">SelfRank</a></h1>
+        <nav>
+            <a href="{{ url_for('index', lang='ru') }}">🇷🇺 RU</a>
+            <a href="{{ url_for('index', lang='en') }}">🇬🇧 EN</a>
+            <a href="{{ url_for('admin') }}">🛠️ Админка</a>
+        </nav>
+    </header>
+    <main>{% block content %}{% endblock %}</main>
+    <footer>
+        <a href="{{ url_for('sitemap') }}">Sitemap</a> | 
+        <a href="{{ url_for('rss_feed') }}">RSS</a> | 
+        Powered by AI &amp; Self-SEO
+    </footer>
+</body>
+</html>
