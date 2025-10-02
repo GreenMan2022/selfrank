@@ -6,6 +6,9 @@ from flask import Flask, render_template, request, jsonify, url_for, redirect, a
 from contextlib import closing
 from ai_engine import generate_seo_article
 from seo_utils import generate_meta_description, format_rfc2822
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
@@ -214,5 +217,13 @@ def rss_feed():
         conn.close()
 
 if __name__ == "__main__":
-    init_db()
-    app.run(debug=not IS_RENDER, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    try:
+        init_db()
+        logger.info("✅ База данных инициализирована")
+    except Exception as e:
+        logger.error(f"❌ Ошибка инициализации БД: {e}")
+        raise
+
+    port = int(os.environ.get("PORT", 5000))
+    logger.info(f"🚀 Запуск сервера на порту {port}")
+    app.run(host="0.0.0.0", port=port, debug=False)
