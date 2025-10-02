@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Создать статью с AI</h2>
+<form id="articleForm">
+    <input name="title" placeholder="Тема статьи" required style="width:100%; padding:8px; margin:5px 0;"><br>
+    <input name="keywords" placeholder="Ключевые слова (опционально)" style="width:100%; padding:8px; margin:5px 0;"><br>
+    <select name="lang" style="padding:8px; margin:5px 0;">
+        <option value="ru">🇷🇺 Русский</option>
+        <option value="en">🇬🇧 English</option>
+    </select><br>
+    <button type="submit" style="padding:10px 20px;">Сгенерировать статью</button>
+</form>
+<div id="result" style="margin-top:20px;"></div>
+
+<script>
+document.getElementById('articleForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const res = await fetch('/admin', {
+        method: 'POST',
+        body: formData
+    });
+    const data = await res.json();
+    const result = document.getElementById('result');
+    if (data.status === 'success') {
+        result.innerHTML = `<p style="color:green;">✅ Статья создана! <a href="${data.url}">Открыть</a></p>`;
+    } else {
+        result.innerHTML = `<p style="color:red;">❌ ${data.message || 'Ошибка'}</p>`;
+    }
+});
+</script>
+{% endblock %}
